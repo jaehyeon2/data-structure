@@ -17,10 +17,10 @@ typedef struct LinkedList {
 }LinkedList;
 
 int addNode(LinkedList* pList, int pos, int data);
-int removeNode(LinkdeList* pList, int pose);
+int removeNode(LinkedList* pList, int pose);
 void showNode(LinkedList* pList);
 int isEmpty(LinkedList* pList);
-int findPos(LinkedList* pList);
+int findPos(LinkedList* pList, int data);
 void makeEmpty(LinkedList* pList);
 
 int main()
@@ -32,7 +32,7 @@ int main()
 	linkedList->curCount=0;
 	linkedList->headNode.nextNode=NULL;
 	
-	showNode(linkdeList);
+	showNode(linkedList);
 	
 	addNode(linkedList, 0, 10);
 	addNode(linkedList, 5, 100);
@@ -48,8 +48,8 @@ int main()
     pos=findPos(linkedList, 30);
     printf("the location of node with data '30':%d\n", pos);
 
-    makeEmpty(linkdeList);
-    showNode(linkdeList);
+    makeEmpty(linkedList);
+    showNode(linkedList);
     return 0;
 }
 
@@ -90,10 +90,8 @@ int isEmpty(LinkedList* pList){
     }
 }
 
-
-
 int addNode(LinkedList* pList, int pos, int data){
-    inf i=0;
+    int i=0;
     Node* pNewNode=NULL, *pTmpNode=NULL;
     if(pList==NULL)
     {
@@ -126,9 +124,9 @@ int addNode(LinkedList* pList, int pos, int data){
     pList->curCount++;
 }
 
-int removeNode(LinkdeList* pList, int pos){
+int removeNode(LinkedList* pList, int pos){
     int i=0;
-    Node* pDelNode=NULL; *pTmpNode=NULL;
+    Node* pDelNode=NULL, *pTmpNode=NULL;
 
      if(pList==NULL)
     {
