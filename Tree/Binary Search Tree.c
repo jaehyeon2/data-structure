@@ -1,11 +1,12 @@
 #include <stdio.h>
-#include <stdio.h>
+#include <stdlib.h>
 
 typedef struct Node{
     int data;
     struct Node* leftChild;
     struct Node* rightChild;
 }Node;
+
 
 void insertTreeNode(Node** p, int value);
 void printTreePreorder(Node* pNode);
@@ -17,9 +18,9 @@ Node* searchTreeParentNode(Node* p, int value);
 void deleteTreeNode(Node** p, int value);
 
 int main(){
-    Node* pParentNode=NULL;
+	Node* pParentNode=NULL;
 
-    insertTreeNode(&pParentNode, 4);
+	insertTreeNode(&pParentNode, 4);
     insertTreeNode(&pParentNode, 2);
     insertTreeNode(&pParentNode, 6);
     insertTreeNode(&pParentNode, 1);
@@ -29,8 +30,8 @@ int main(){
 
     printf("Tree(pParentNode)\n");
     printf("Preorder\t:");
-    printTreePreOrder(pParentNode);
-    printf("\nInorder\t:");
+    printTreePreorder(pParentNode);
+    printf("\nInorder\t\t:");
     printTreeInorder(pParentNode);
     printf("\nPostorder\t:");
     printTreePostorder(pParentNode);
@@ -44,12 +45,12 @@ int main(){
         printf("3 is not existed\n\n");
     }
 
-    printf("Delete data 3\n");
-    deleteTreeNode(pParentNode, 3);
     printf("Delete data 2\n");
-    deleteTreeNode(pParentNode, 2);
-
-    printf("Search Data 3\n");
+    deleteTreeNode(&pParentNode, 2);
+    printf("\nDelete data 3\n");
+    deleteTreeNode(&pParentNode, 3);
+    
+    printf("\nSearch Data 3\n");
     if(searchTreeNode(pParentNode, 3)!=NULL){
         printf("3 is existed\n\n");
     }
@@ -59,8 +60,8 @@ int main(){
 
     printf("Tree(pParentNode)\n");
     printf("Preorder\t:");
-    printTreePreOrder(pParentNode);
-    printf("\nInorder\t:");
+    printTreePreorder(pParentNode);
+    printf("\nInorder\t\t:");
     printTreeInorder(pParentNode);
     printf("\nPostorder\t:");
     printTreePostorder(pParentNode);
@@ -79,7 +80,7 @@ void insertTreeNode(Node** p, int value){
     }
     else if((*p)->data>value){
         //Recursive call to leftChild
-        insertTreeNode(&((*p)->rightChild), value);
+        insertTreeNode(&((*p)->leftChild), value);
     }
     else{
         //Recursive call to rightChild
@@ -94,8 +95,8 @@ void printTreePreorder(Node* pNode)
     }
 
     printf("%3d", pNode->data);
-    printTreePreOrder(pNode->leftChild);
-    printTreePreOrder(pNode->rightChild);
+    printTreePreorder(pNode->leftChild);
+    printTreePreorder(pNode->rightChild);
 }
 
 void printTreeInorder(Node* pNode){
@@ -103,9 +104,9 @@ void printTreeInorder(Node* pNode){
         return;
     }
 
-    printTreePreOrder(pNode->leftChild);
+    printTreeInorder(pNode->leftChild);
     printf("%3d", pNode->data);
-    printTreePreOrder(pNode->rightChild);
+    printTreeInorder(pNode->rightChild);
 }
 
 void printTreePostorder(Node* pNode){
@@ -113,8 +114,8 @@ void printTreePostorder(Node* pNode){
         return;
     }
 
-    printTreePreOrder(pNode->leftChild);
-    printTreePreOrder(pNode->rightChild);
+    printTreePostorder(pNode->leftChild);
+    printTreePostorder(pNode->rightChild);
     printf("%3d", pNode->data);
 }
 
@@ -150,6 +151,15 @@ Node* searchTreeParentNode(Node* p, int value){
             p=p->leftChild;
         }
     }
+    return parentNode;
+}
+
+Node* findMinNode(Node* p){
+    Node* tmp=p;
+    while(tmp->leftChild!=NULL){
+        tmp=tmp->leftChild;
+    }
+    return tmp;
 }
 
 void deleteTreeNode(Node** p, int value){
@@ -160,7 +170,7 @@ void deleteTreeNode(Node** p, int value){
 
     parentNode=searchTreeParentNode(*p, value);
     delNode=searchTreeNode(*p, value);
-    if (delNode!=NULL){
+    if (delNode==NULL){
         printf("There is no %d\n", value);
         return ;
     }
@@ -171,15 +181,15 @@ void deleteTreeNode(Node** p, int value){
         if (parentNode==NULL){
             (*p)=NULL;
         }
-        else{
-            //지울 노드가 부모 노드의 어느 쪽에 있는지 확인하고 NULL로 지정
-            if (parentNode->leftChild==delNode){
-                parentNode->leftChild=NULL;
-            }
-            else{
-                parentNode->rightChild=NULL;
-            }
+        
+        //지울 노드가 부모 노드의 어느 쪽에 있는지 확인하고 NULL로 지정
+        else if (parentNode->leftChild==delNode){
+            parentNode->leftChild=NULL;    
         }
+        else{
+			parentNode->rightChild=NULL;
+        }
+        free(delNode);
     }
 
     //Case 2. one child node
@@ -198,13 +208,13 @@ void deleteTreeNode(Node** p, int value){
                 parentNode->rightChild=childNode;
             }
         }
+        free(delNode);
     }
 
     //Case 3. two child node
     else{
-        succNode=delNode->leftChild;
-
-        
+        succNode=findMinNode(delNode->rightChild);
+        delNode->data=succNode->data;
+        deleteTreeNode(&(delNode->rightChild), succNode->data);
     }
-    free(delNode);
 }
